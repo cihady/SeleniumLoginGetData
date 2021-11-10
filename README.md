@@ -1,2 +1,2 @@
 SeleniumVeriGonderAl
-C# Selenium Web Driver ile belirlenen internet sitesine login olup veri çekme
+C# Selenium Web Driver login web site and get data
