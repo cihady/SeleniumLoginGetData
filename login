@@ -1,4 +1,4 @@
-namespace SeleniumVeriGonderAl
+namespace SeleniumLoginGetData
 {
     public partial class Form1 : Form
     {
@@ -9,92 +9,86 @@ namespace SeleniumVeriGonderAl
         ChromeDriver driver;
 
         
-        public void Giris()
+        public void Login()
         {
             driver = new ChromeDriver();
             driver.Navigate().GoToUrl("URL");
-
-
-           // driver.FindElement(By.Id("termsChkbx")).Click();
-           // driver.FindElement(By.Id("sub1")).Click(); login kısmına geçmek için tıklanacak yer varsa id sini bul tıkla
-
-            driver.FindElement(By.Id("txtKullanıcı")).SendKeys(""); // Kullanıcı Adı kısmının girileceği text id si
-            driver.FindElement(By.Id("txtSifre")).SendKeys(""); // Şifre kısmının girileceği text id si
+            driver.FindElement(By.Id("txtUserName")).SendKeys(""); // UserName
+            driver.FindElement(By.Id("txtPassword")).SendKeys(""); // Password
             driver.FindElement(By.ClassName("submitButton")).Click();
 
         }
-        public void VeriGonder()
+        
+        public void SendData()
         {
             string gonderilecek;
-            driver.FindElement(By.Id("gönderilecekveri idsi")).SendKeys(gonderilecek.Text);
+            driver.FindElement(By.Id("TypeTextID")).SendKeys(sendingText.Text);
 
             /*driver.SwitchTo().Frame(0);
             driver.FindElement(By.Id("recaptcha-anchor")).Click();
             driver.SwitchTo().DefaultContent();
 
-            driver.SwitchTo().Frame(0);*/ // Robot değilim kısmına tıklayacağımız yer
+            driver.SwitchTo().Frame(0);*/ // I am not robot
+            //  MessageBox.Show("devam ?"); If captcha is text, manual
         }
-        public void VeriAl()
+        
+        public void GetData()
         {
 
-            string alinacakveri;
-            alinacakveri = driver.FindElement(By.XPath("/html/body/div........")).GetAttribute("value");
-             //Çekilecek değerin full xpathini yaz
-
-              string[] satir = new string[] { alinacakveri };
-              dataGridView1.Rows.Add(satir); // datagride çekilen veriyi aktar
-
+            string gData = driver.FindElement(By.XPath("/html/body/div........")).GetAttribute("value");
+             //Full xpath
+              string[] Dline = new string[] { gData };
+              dataGridView1.Rows.Add(Dline); // Get data to datagridView
         }
 
 
-        void excele_aktar(DataGridView dg) // datagriddeki veriyi excele aktar
+        void excel_export(DataGridView dg) // Export to excel
         {
             dg.AllowUserToAddRows = false;
-            System.Globalization.CultureInfo dil = System.Threading.Thread.CurrentThread.CurrentCulture;
+            System.Globalization.CultureInfo lang = System.Threading.Thread.CurrentThread.CurrentCulture;
             System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-us");
-            Microsoft.Office.Interop.Excel.Application Tablo = new Microsoft.Office.Interop.Excel.Application();
-            Microsoft.Office.Interop.Excel.Workbook kitap = Tablo.Workbooks.Add(true);
-            Microsoft.Office.Interop.Excel.Worksheet sayfa = (Microsoft.Office.Interop.Excel.Worksheet)Tablo.ActiveSheet;
-            System.Threading.Thread.CurrentThread.CurrentCulture = dil;
-            Tablo.Visible = true;
-            sayfa = kitap.ActiveSheet;
+            Microsoft.Office.Interop.Excel.Application Table = new Microsoft.Office.Interop.Excel.Application();
+            Microsoft.Office.Interop.Excel.Workbook book = Table.Workbooks.Add(true);
+            Microsoft.Office.Interop.Excel.Worksheet sheet = (Microsoft.Office.Interop.Excel.Worksheet)Table.ActiveSheet;
+            System.Threading.Thread.CurrentThread.CurrentCulture = lang;
+            Table.Visible = true;
+            sheet = book.ActiveSheet;
             for (int i = 0; i < dg.Rows.Count; i++)
             {
                 for (int j = 0; j < dg.ColumnCount; j++)
                 {
                     if (i == 0)
                     {
-                        Tablo.Cells[1, j + 1] = dg.Columns[j].HeaderText;
+                        Table.Cells[1, j + 1] = dg.Columns[j].HeaderText;
                     }
-                    Tablo.Cells[i + 2, j + 1] = dg.Rows[i].Cells[j].Value.ToString();
+                    Table.Cells[i + 2, j + 1] = dg.Rows[i].Cells[j].Value.ToString();
                 }
             }
-            Tablo.Visible = true;
-            Tablo.UserControl = true;
+            Table.Visible = true;
+            Table.UserControl = true;
         }
+        
         private void button1_Click(object sender, EventArgs e)
         {
-            VeriGonder();
-          //  MessageBox.Show("devam ?"); captchayı elle girmemiz gerekirse
-            VeriAl();
+            SendData();
+            GetData();
 
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            Giris();
+            Login();
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
-            excele_aktar(dataGridView1);
+            excel_export(dataGridView1);
         }
 
         private void button3_Click(object sender, EventArgs e)
         {
-            VeriGonder();
-            //  MessageBox.Show("devam ?"); captchayı elle girmemiz gerekirse
-            VeriAl();
+            SendData();
+            GetData();
         }
     }
 }
